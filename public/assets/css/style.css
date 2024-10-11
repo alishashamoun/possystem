@@ -1,0 +1,187 @@
+@import url(https://fonts.googleapis.com/css?family=Roboto:300);
+
+.bg-color {
+    width: 486px;
+    padding: 8% 0 0;
+    margin: auto;
+}
+
+.content {
+    position: relative !important;
+    z-index: 1 !important;
+    background: #FFFFFF !important;
+    max-width: 360px !important;
+    margin-top: 50% !important;
+    padding: 40px !important;
+    border-radius: 30px !important;
+    text-align: center !important;
+    box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24) !important;
+}
+
+h3.text-dark.fs-20.fw-medium.mb-2 {
+    font-size: 29px;
+    margin-top: 0;
+    font-family: monospace;
+}
+.d-grid button {
+    background-color: #9bd1ff;
+}
+
+button.btn.btn-primary.log-in {
+    background-color: #73bcda;
+    text-transform: capitalize;
+    outline: 0;
+    width: 100%;
+    border: 0;
+    padding: 18px;
+    color: #FFFFFF;
+    cursor: pointer;
+    font-family: monospace;
+    font-size: 15px;
+}
+
+.content input {
+    font-family: monospace;
+    outline: 0;
+    background: #f2f2f2;
+    width: 100%;
+    border: 0;
+    margin: 0 0 15px;
+    padding: 15px;
+    box-sizing: border-box;
+    font-size: 14px;
+    border-radius: 5px !important;
+}
+
+
+
+.content button:hover,
+.content button:active,
+.content button:focus {
+    background: #f2f2f2;
+}
+
+.content.message {
+    margin: 15px 0 0;
+    color: #b3b3b3;
+    font-size: 12px;
+}
+
+.content .message a {
+    color: #f2f2f2;
+    text-decoration: none;
+}
+
+.content .register-form {
+    display: none;
+}
+
+.container {
+    position: relative;
+    z-index: 1;
+    max-width: 300px;
+    margin: 0 auto;
+}
+
+.container:before,
+.container:after {
+    content: "";
+    display: block;
+    clear: both;
+}
+
+.container .info {
+    margin: 50px auto;
+    text-align: center;
+}
+
+.container .info h1 {
+    margin: 0 0 15px;
+    padding: 0;
+    font-size: 36px;
+    font-weight: 300;
+    color: #1a1a1a;
+}
+
+.container .info span {
+    color: #4d4d4d;
+    font-size: 12px;
+}
+
+.container .info span a {
+    color: #000000;
+    text-decoration: none;
+}
+
+.container .info span .fa {
+    color: #EF3B3A;
+}
+/* // register */
+.content-form{
+    position: relative !important;
+    z-index: 1 !important;
+    background: #FFFFFF !important;
+    max-width: 360px !important;
+    margin-top: 20%;
+    padding: 70px !important;
+    border-radius: 30px !important;
+    text-align: center !important;
+    box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24) !important;
+}
+
+.content-form input {
+    font-family: monospace;
+    outline: 0;
+    background: #f2f2f2;
+    width: 100%;
+    border: 0;
+    margin: 0 0 15px;
+    padding: 15px;
+    box-sizing: border-box;
+    font-size: 14px;
+    border-radius: 5px !important;
+}
+
+button.btn.btn-primary.register {
+    background-color: #73bcda;
+    text-transform: capitalize;
+    outline: 0;
+    width: 100%;
+    border: 0;
+    padding: 18px;
+    color: #FFFFFF;
+    cursor: pointer;
+    font-family: monospace;
+    font-size: 15px;
+}
+
+h3.text-dark.fs-20.fw-medium {
+    font-size: 35px;
+    margin-top: 0;
+    font-family: monospace;
+}
+p.text-dark.text-capitalize.fs-14 {
+    font-family: monospace;
+    margin-bottom: 20px;
+    font-size: 14px;
+}
+
+body {
+    background: #f2f2f2;
+    /* fallback for old browsers */
+    background: -webkit-linear-gradient(right, #f2f2f2);
+    background: -moz-linear-gradient(right, #f2f2f2);
+    background: -o-linear-gradient(right, #f2f2f2);
+    background: linear-gradient(to left, #eaede8, #eaede8);
+    font-family: "Roboto", sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+@media (min-width: 768px) { /* For tablets and larger devices */
+    .bg-color {
+        padding: 3rem; /* Adjust padding for tablets */
+    }
+}
+
+
+
