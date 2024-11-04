@@ -10,6 +10,7 @@
                     <div class="flex-grow-1">
                         <h1>Sales Report</h1>
                     </div>
+                    <button onclick="window.print()" class="btn btn-primary"><i class="fa-solid fa-print"></i></button>
                 </div>
 
                 <!-- Datatables  -->

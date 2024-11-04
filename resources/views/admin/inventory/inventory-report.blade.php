@@ -9,13 +9,17 @@
                 <div class="pt-4 d-flex align-items-sm-center flex-sm-row flex-column">
                     <div class="flex-grow-1">
                         <h1>Inventory Report</h1>
+
                     </div>
+                    <button onclick="window.print()" class="btn btn-primary"><i class="fa-solid fa-print"></i></button>
+
                 </div>
 
                 <!-- Datatables  -->
                 <div class="row">
                     <div class="col-12">
                         <div class="card shadow p-3 mb-5 bg-body rounded">
+
                             <div class="card-body">
                                 <table class="table table-striped">
                                     <thead>
