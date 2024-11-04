@@ -643,7 +643,7 @@ function printPage() {
         document.getElementById('body').innerHTML = data;
         window.print();
         document.getElementById('body').innerHTML = body;
-    }, 1000); 
+    }, 1000);
 
 }
 
