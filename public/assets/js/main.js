@@ -962,41 +962,37 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 
-// var chartData = @json($chartData);
 
-// var labels = chartData.map(item => item.date); // Dates for x-axis
-// var totalSalesData = chartData.map(item => item.total_sales); // Total sales for y-axis
-// var salesCountData = chartData.map(item => item.count); // Sales count for y-axis
 
-// var ctx = document.getElementById('myChart').getContext('2d');
-// var myChart = new Chart(ctx, {
-//     type: 'bar', // Bar chart
-//     data: {
-//         labels: labels,
-//         datasets: [{
-//                 label: 'Total Sales Amount',
-//                 data: totalSalesData,
-//                 backgroundColor: 'rgba(75, 192, 192, 0.2)',
-//                 borderColor: 'rgba(75, 192, 192, 1)',
-//                 borderWidth: 1,
-//             },
-//             {
-//                 label: 'Sales Count',
-//                 data: salesCountData,
-//                 backgroundColor: 'rgba(255, 99, 132, 0.2)',
-//                 borderColor: 'rgba(255, 99, 132, 1)',
-//                 borderWidth: 1,
-//             }
-//         ]
-//     },
-//     options: {
-//         scales: {
-//             y: {
-//                 beginAtZero: true
-//             }
-//         }
-//     }
-// });
+var ctx = document.getElementById('myChart').getContext('2d');
+var myChart = new Chart(ctx, {
+    type: 'bar', // Bar chart
+    data: {
+        labels: labels,
+        datasets: [{
+                label: 'Total Sales Amount',
+                data: totalSalesData,
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1,
+            },
+            {
+                label: 'Sales Count',
+                data: salesCountData,
+                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                borderColor: 'rgba(255, 99, 132, 1)',
+                borderWidth: 1,
+            }
+        ]
+    },
+    options: {
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+});
 
 
 var piechart = document.getElementById('mypieChart').getContext('2d');
