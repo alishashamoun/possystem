@@ -1,5 +1,5 @@
 <?php
-
+use App\Http\Controllers\Auth\CustomAuthenticatedSessionController;
 use App\Http\Controllers\Admin\SupplierController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\DashboardController;
@@ -14,6 +14,8 @@ use App\Http\Controllers\CashierController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\SalesController;
+use App\Http\Controllers\InventoryHistoryController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ReceiptController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\PurchaseController;
@@ -37,24 +39,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/test', function () {
+Route::get('/', function () {
     return view('welcome');
 });
-
-
-// Public Routes
-// Route::get('/', [CustomerController::class, 'index'])->name('customer.index');
-// Route::get('/register', [CustomerController::class, 'register'])->name('customer.register');
-// Route::post('/register', [CustomerController::class, 'store'])->name('customer.store');
-// Route::get('/login', [CustomerController::class, 'login'])->name('customer.login');
-// Route::post('/login', [CustomerController::class, 'authenticate'])->name('customer.authenticate');
-
-// Authenticated Customer Routes
-// Route::middleware(['auth'])->group(function () {
-//     Route::get('/account', [CustomerAccountController::class, 'index'])->name('customer.account.index');
-//     Route::get('/account/purchase-history', [CustomerPurchaseHistoryController::class, 'index'])->name('customer.account.purchase-history.index');
-//     Route::get('/loyalty-program', [LoyaltyProgramController::class, 'index'])->name('customer.loyalty-program.index');
-// });
 
 Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
@@ -96,14 +83,13 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
         Route::post('/store', [InventoryController::class, 'store'])->name('store');
         Route::get('/{id}/edit', [InventoryController::class, 'edit'])->name('edit');
         Route::put('/{id}/update', [InventoryController::class, 'update'])->name('update');
-        Route::delete('/{id}/delete', [InventoryController::class, 'destroy'])->name('destroy');
-        Route::get('/generate-barcode/{id}', [InventoryController::class, 'generateBarcode'])->name('generate-barcode');
+        Route::delete('/{id}/delete', [InventoryHistoryController::class, 'destroy'])->name('destroy');
 
-        Route::post('/stock-in', [InventoryController::class, 'stockIn'])->name('stockIn');
-        Route::post('/stock-out', [InventoryController::class, 'stockOut'])->name('stockOut');
+        Route::post('stock-in/{id}', [InventoryController::class, 'stockIn']);
+        Route::post('stock-out/{id}', [InventoryController::class, 'stockOut']);
 
-        Route::get('/report', [InventoryController::class, 'generateReport'])->name('report');
-        Route::get('/check-stock-levels', [InventoryController::class, 'checkStockLevels'])->name('checkStockLevels');
+        Route::get('/report', [InventoryHistoryController::class, 'inventoryReport'])->name('report');
+        // Route::get('/check-stock-levels', [InventoryController::class, 'checkStockLevels'])->name('checkStockLevels');
     });
 
     Route::prefix('sales')->name('sales.')->group(function () {
@@ -116,7 +102,6 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
         Route::get('/history', [SalesHistoryController::class, 'index'])->name('history');
         Route::get('/print-receipt/{id}', [ReceiptController::class, 'printReceipt'])->name('print-receipt');
     });
-
 
     Route::resource('admin/users', UserController::class);
     Route::resource('admin/suppliers', SupplierController::class);
@@ -153,8 +138,6 @@ Route::middleware(['auth', 'role:cashier|admin'])->group(function () {
     });
 });
 
-// Route::get('/cashier/dashboard', [CashierController::class, 'dashboard'])->name('cashier.dashboard');
-
 Route::middleware(['auth', 'role:'])->group(function () {
     Route::get('/inventory-staff/dashboard', [InventoryController::class, 'index'])->name('inventory.dashboard');
 
@@ -177,13 +160,13 @@ Route::middleware(['auth', 'role:customer|admin|cashier'])->group(function () {
     });
 
     Route::resource('admin/users', UserController::class);
+    Route::resource('orders', OrderController::class);
     Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::put('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
     Route::get('/cashier/order', [CashierController::class, 'index'])->name('cashier.index');
 
 });
 
-Route::get('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 require __DIR__ . '/auth.php';
-
+Route::get('/logout', [CustomAuthenticatedSessionController::class, 'destroy'])->name('pos.logout');
 

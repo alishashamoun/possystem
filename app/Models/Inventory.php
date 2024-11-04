@@ -8,10 +8,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class Inventory extends Model
 {
-    protected $table = 'inventory';
+    protected $table = 'inventories';
     protected $fillable = [
         'product_id',
+        'sku',
         'quantity',
+        'cost_price',
+        'selling_price'
     ];
 
     public function product()

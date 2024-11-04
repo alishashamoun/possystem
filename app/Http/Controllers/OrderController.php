@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
+use App\Models\Product;
 use Illuminate\Http\Request;
 
 class OrderController extends Controller
@@ -12,7 +13,8 @@ class OrderController extends Controller
      */
     public function index()
     {
-        //
+        $orders = Order::with('products')->latest()->get();
+        return view('orders.index', compact('orders'));
     }
 
     /**
@@ -20,7 +22,8 @@ class OrderController extends Controller
      */
     public function create()
     {
-        //
+        $products = Product::all();
+        return view('orders.create', compact('products'));
     }
 
     /**
@@ -28,7 +31,26 @@ class OrderController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'payment_method' => 'required',
+            'products' => 'required|array',
+            'products.*.id' => 'required|exists:products,id',
+            'products.*.quantity' => 'required|integer|min:1',
+        ]);
+
+        $order = Order::create([
+            'payment_method' => $request->payment_method,
+            'status' => 'completed', // Default status
+        ]);
+
+        foreach ($request->products as $productData) {
+            $order->products()->attach($productData['id'], [
+                'price' => Product::find($productData['id'])->price,
+                'quantity' => $productData['quantity'],
+            ]);
+        }
+
+        return redirect()->route('orders.index')->with('success', 'Order created successfully.');
     }
 
     /**

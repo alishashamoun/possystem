@@ -37,7 +37,17 @@ public function inventory()
 
 public function sales()
 {
-    return $this->belongsToMany(Sale::class, 'sale_product')->withPivot('quantity', 'price')->withTimestamps();;
+    return $this->belongsToMany(Sale::class, 'sale_product')->withPivot('quantity', 'price')->withTimestamps();
+}
+
+public function orders()
+{
+    return $this->belongsToMany(Order::class,  'order_product')->withPivot('price');
+}
+
+public function saleProducts()
+{
+    return $this->hasMany(SaleProduct::class);
 }
 
 }

@@ -33,26 +33,27 @@ class AuthenticatedSessionController extends Controller
             $user = Auth::user(); // retrieve the user instance with roles
 
             $allowedRoles = ['admin', 'manager', 'cashier', 'inventory staff', 'customer'];
-
-            if (in_array($user->roles->first()->name, $allowedRoles)) {
-                switch ($user->roles->first()->name) {
-                    case 'admin':
-                        return redirect()->route('admin.dashboard');
-                    case 'manager':
-                        return redirect()->route('manager.dashboard');
-                    case 'cashier':
-                        return redirect()->route('cashier.index');
-                    case 'inventory staff':
-                        return redirect()->route('inventory.dashboard');
+            // Check if user has one of the allowed roles
+            foreach ($allowedRoles as $role) {
+                if ($user->hasRole($role)) {
+                    switch ($role) {
+                        case 'admin':
+                            return redirect()->route('admin.dashboard');
+                        case 'manager':
+                            return redirect()->route('manager.dashboard');
+                        case 'cashier':
+                            return redirect()->route('cashier.index');
+                        case 'inventory staff':
+                            return redirect()->route('inventory.dashboard');
                         case 'customer':
                             return redirect()->route('customer.dashboard');
-                    default:
-                        return redirect()->route('home');
+                    }
                 }
-            } else {
-                // User does not have the required role, return a 403 error
-                abort(403, 'User does not have the right roles.');
             }
+
+            // User does not have the required role, return a 403 error
+            abort(403, 'User does not have the right roles.');
+
         }
 
         return back()->withErrors([

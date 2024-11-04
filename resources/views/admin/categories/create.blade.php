@@ -4,11 +4,11 @@
         <div class="content">
 
             <!-- Start Content-->
-            <div class="container-xxl">
+            <div class="container-fluid">
 
                 <div class="py-3 d-flex align-items-sm-center flex-sm-row flex-column">
                     <div class="flex-grow-1">
-                        <h4 class="fs-18 fw-semibold m-0">Form</h4>
+                        <h4 class="fs-18 fw-semibold m-0">Category Create</h4>
                     </div>
 
 
@@ -25,7 +25,7 @@
                         <div class="card">
 
                             <div class="card-header">
-                                <h5 class="card-title mb-0">Create Form</h5>
+
                             </div><!-- end card header -->
 
                             <div class="card-body">
@@ -60,7 +60,7 @@
 
 
                                         <div class="col-xs-6 col-sm-6 col-md-6 my-4">
-                                            <button type="submit" class="btn btn-primary">Submit</button>
+                                            <button type="submit" class="btn btn-primary">Add</button>
                                             <a href="{{ route('categories.index') }}" class="btn btn-danger">Back</a>
                                         </div>
                                     </div>

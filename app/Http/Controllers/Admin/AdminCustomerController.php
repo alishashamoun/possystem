@@ -26,20 +26,36 @@ class AdminCustomerController extends Controller
             'email' => 'required|email|unique:customers',
             'phone' => 'nullable|string',
             'address' => 'nullable|string',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
-        try {
 
-            Customer::create($request->all());
+        $filename = null;
+        if ($request->hasFile('image')) {
+            $filename = time() . '.' . $request->file('image')->extension();
+            $request->file('image')->move(public_path('customerImage'), $filename);
+        }
+
+
+        try {
+            Customer::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'phone' => $request->phone,
+                'address' => $request->address,
+                'image' => $filename,
+            ]);
+
 
             return redirect()->route('customers.index')
                 ->with('success', 'Customer created successfully.');
-
         } catch (\Exception $e) {
-            // Error message
+            \Log::error('Customer creation failed: ' . $e->getMessage());
             return redirect()->route('customers.index')
                 ->with('error', 'Failed to create customer: ' . $e->getMessage());
         }
+
     }
+
 
     public function show($id)
     {
@@ -55,19 +71,38 @@ class AdminCustomerController extends Controller
 
     public function update(Request $request, $id)
     {
+        $customer = Customer::findOrFail($id);
+
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:customers,email,' . $id,
-            'phone' => 'nullable|string|max:15',
+            'email' => 'required|email|unique:customers,email,' . $customer->id,
+            'phone' => 'nullable|string',
             'address' => 'nullable|string',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
+        $filename = $customer->image;
 
-        $customer = Customer::find($id);
-        $customer->update($request->all());
+        if ($request->hasFile('image')) {
+            $filename = time() . '.' . $request->file('image')->extension();
+            $request->file('image')->move(public_path('customerImage'), $filename);
+        }
+        try {
+            $customer->update([
+                'name' => $request->name,
+                'email' => $request->email,
+                'phone' => $request->phone,
+                'address' => $request->address,
+                'image' =>  $filename,
+            ]);
 
-        return redirect()->route('customers.index')
-            ->with('success', 'Customer updated successfully.');
+            return redirect()->route('customers.index')
+                ->with('success', 'Customer updated successfully.');
+        } catch (\Exception $e) {
+            return redirect()->route('customers.index')
+                ->with('error', 'Failed to update customer: ' . $e->getMessage());
+        }
     }
+
 
     public function destroy($id)
     {

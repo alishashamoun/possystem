@@ -86,7 +86,7 @@ class CustomerController extends Controller
 
         return view('admin.customer.dashboard', compact('products', 'sales', 'customer', 'purchases'));
     }
-    
+
 
 
 

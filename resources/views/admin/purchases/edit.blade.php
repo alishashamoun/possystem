@@ -4,7 +4,7 @@
         <div class="content">
 
             <!-- Start Content-->
-            <div class="container-xxl">
+            <div class="container-fluid">
 
                 <div class="py-3 d-flex align-items-sm-center flex-sm-row flex-column">
                     <div class="flex-grow-1">
@@ -27,7 +27,7 @@
             @endif
 
                 <div class="row">
-                    <div class="col-lg-6">
+                    <div class="col-lg-12">
                         <div class="card">
 
                             <div class="card-header">
@@ -90,7 +90,7 @@
                                             </div>
                                         </div>
 
-                                        <div class="col-xs-6 col-sm-6 col-md-6 my-4">
+                                        <div class="text-end">
                                             <button type="submit" class="btn btn-primary">Update Purchase</button>
                                             <a href="{{ route('purchases.index') }}" class="btn btn-danger">Back</a>
                                         </div>

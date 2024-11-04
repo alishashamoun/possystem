@@ -4,7 +4,7 @@
         <div class="content">
 
             <!-- Start Content-->
-            <div class="container-xxl">
+            <div class="container-fluid">
 
                 <div class="py-3 d-flex align-items-sm-center flex-sm-row flex-column">
                     <div class="flex-grow-1">
@@ -33,16 +33,10 @@
                             </div><!-- end card header -->
 
                             <div class="card-body">
-                                <form method="post" class=""
-                                    action="{{ route('customers.update', $customer->id) }}">
+                                <form method="post" class="" action="{{ route('customers.update', $customer->id) }}"
+                                    enctype="multipart/form-data">
                                     @csrf
                                     @method('PUT')
-                                    @if ($errors->any())
-                                        <div class="alert alert-danger alert-block">
-                                            <button type="button" class="close" data-dismiss="alert">×</button>
-                                            <strong>{{ $errors->first() }}</strong>
-                                        </div>
-                                    @endif
                                     @csrf
                                     <div class="row">
                                         <div class="col-xs-6 col-sm-6 col-md-6">
@@ -78,7 +72,7 @@
                                             </div>
                                         </div>
                                         <div class="col-xs-6 col-sm-6 col-md-6">
-                                            <div class="form-group">
+                                            <div class="form-group mt-3">
                                                 <strong>phone:</strong>
                                                 <input class="form-control my-2" type="phone" name="phone"
                                                     value="{{ $customer->phone }}" required autocomplete="phone" required>
@@ -88,14 +82,29 @@
                                             </div>
                                         </div>
 
+                                        <div class="col-xs-6 col-sm-6 col-md-6">
+                                            <div class="form-group mt-3">
+                                                <strong>Image:</strong>
+                                                <input type="file" class="form-control" name="image"
+                                                    value="{{ $customer->image }}">
+                                                @error('image')
+                                                    <div class="text-danger">{{ $message }}</div>
+                                                @enderror
+                                            </div>
+                                        </div>
 
+                                        <div class="form-group mt-3">
+                                            <label for="image">Customer Image</label>
+                                            @if (!empty($customer->image) && file_exists(public_path('customerImage/' . $customer->image)))
+                                                <img src="{{ asset('customerImage/' . $customer->image) }}"
+                                                    alt="{{ $customer->name }}" style="width: 100px; height: auto;" />
+                                            @else
+                                                <span>No Image</span>
+                                            @endif
+                                           
+                                        </div>
 
-
-
-
-
-
-                                        <div class="col-xs-6 col-sm-6 col-md-6 my-4">
+                                        <div class="col-xs-12 mt-5 text-end">
                                             <button type="submit" class="btn btn-primary">Submit</button>
                                             <a href="{{ route('customers.index') }}" class="btn btn-danger">Back</a>
                                         </div>

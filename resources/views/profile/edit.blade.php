@@ -4,7 +4,7 @@
         <div class="content">
 
             <!-- Start Content-->
-            <div class="container-xxl">
+            <div class="container-fluid">
                 <!-- Datatables  -->
                 <div class="row">
                     <div class="col-12">
@@ -62,7 +62,7 @@
                                     </div>
 
                                     <button type="submit" class="btn btn-primary">Save</button>
-                                    <a href="{{ route('cashier.index') }}" class="btn btn-danger">Back</a>
+                                    <a href="{{ route('admin.dashboard') }}" class="btn btn-danger">Back</a>
                                 </form>
                             </div>
                         </div>

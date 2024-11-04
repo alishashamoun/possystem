@@ -95,70 +95,86 @@ $(document).ready(function () {
         }
     });
 
-    // Add product to list on image click
-    $('.product-image img').on('click', function () {
-        const productId = $(this).data('product-id');
-        const productName = $(this).data('product-name');
-        const productPrice = parseFloat($(this).data('product-price'));
+   // Add product to list on image click
+$('.product-image img').on('click', function () {
+    const productId = $(this).data('product-id');
+    const productName = $(this).data('product-name');
+    const productPrice = parseFloat($(this).data('product-price'));
 
-        let productRow = $(`#product-list-body tr[data-product-id='${productId}']`);
+    let productRow = $(`#product-list-body tr[data-product-id='${productId}']`);
 
-        if (productRow.length) {
-            // If product row exists, update the quantity
-            let quantityElem = productRow.find('.quantity');
-            let newQuantity = parseInt(quantityElem.text()) + 1;
-            quantityElem.text(newQuantity);
+    if (productRow.length) {
+        // If product row exists, update the quantity
+        let quantityElem = productRow.find('.quantity');
+        let newQuantity = parseInt(quantityElem.text()) + 1;
+        quantityElem.text(newQuantity);
 
-            updateSubtotal(productRow);
-        } else {
-            // If product row does not exist, add new row
-            const newRow = `
-                <tr data-product-id="${productId}">
-                    <td>${productName}</td>
-                    <td>
-                        <button class="decrease-btn">-</button>
-                        <span class="quantity">1</span>
-                        <button class="increase-btn">+</button>
-                    </td>
-                    <td>RS ${productPrice.toFixed(2)}</td>
-                    <td class="subtotal">RS ${productPrice.toFixed(2)}</td>
-                    <td><button class="delete-btn"><i class="fa-solid fa-trash"></i></button></td>
-                </tr>`;
-            $('#product-list-body').append(newRow);
-        }
+        updateSubtotal(productRow);
+    } else {
+        // If product row does not exist, add new row
+        const newRow = `
+            <tr data-product-id="${productId}">
+                <td>${productName}</td>
+                <td>
+                    <button class="decrease-btn">-</button>
+                    <span class="quantity">1</span>
+                    <button class="increase-btn">+</button>
+                </td>
+                <td class="product-price">RS ${productPrice.toFixed(2)}</td>
+                <td class="subtotal">RS ${productPrice.toFixed(2)}</td>
+                <td><button class="delete-btn"><i class="fa-solid fa-trash"></i></button></td>
+            </tr>`;
+        $('#product-list-body').append(newRow);
+    }
 
-        let quantity = parseInt(productRow.find('.quantity').text()) || 1;
+    // Update totals after adding/updating the product
+    updateTotals();
+    attachDeleteButtons(); // Reattach delete button listeners
+});
 
-        // Update the receipt section
-        let productData = {
-            id: productId,
-            name: productName,
-            quantity: quantity,
-            price: productPrice,
-            subtotal: productPrice * quantity
+// Function to attach delete button listeners
+function attachDeleteButtons() {
+    const deleteButtons = document.querySelectorAll('.delete-btn');
+    deleteButtons.forEach(button => {
+        button.onclick = function (e) {
+            const row = e.target.closest('tr');
+            if (row) {
+                row.remove();
+                updateTotals(); // Update totals after removal
+            }
         };
-        updateReceipt(productData);
+    });
+}
 
-        updateLocalStorage();
+// Function to update hidden inputs based on current product list
+function updateProductsInput() {
+    // Clear existing products inputs to avoid duplicates
+    $('#paymentForm input[name^="products"]').remove();
 
-        // Update totals after adding/updating the product
-        updateTotals();
+    const products = [];
+    $('#product-list-body tr').each(function () {
+        const productId = $(this).data('product-id'); // Adjusted to use data-product-id
+        const quantity = parseInt($(this).find('.quantity').text()); // Get quantity from text
+        const price = parseFloat($(this).find('.product-price').text().replace('RS ', '').replace(',', '')); // Get price and clean it
 
-        // Select all delete buttons
-        const deleteButtons = document.querySelectorAll('.delete-btn');
-
-        // Add click event listener to each delete button
-        deleteButtons.forEach(button => {
-            button.addEventListener('click', (e) => {
-                // Get the row of the button that was clicked
-                const row = e.target.closest('tr');
-                // Remove the row from the table
-                if (row) {
-                    row.remove();
-                }
-            });
+        // Ensure product information is pushed as an object
+        products.push({
+            id: productId,
+            quantity: quantity,
+            price: price,
         });
     });
+
+    // Append each product as a separate input
+    products.forEach((product, index) => {
+        $('#paymentForm').append(`<input type="hidden" name="products[${index}][id]" value="${product.id}">`);
+        $('#paymentForm').append(`<input type="hidden" name="products[${index}][quantity]" value="${product.quantity}">`);
+        $('#paymentForm').append(`<input type="hidden" name="products[${index}][price]" value="${product.price}">`);
+    });
+}
+
+
+
 
 
     // Update subtotal function
@@ -291,11 +307,22 @@ $(document).ready(function () {
         $('#paid').val(payingAmount);
     }
 
+    $('#paymentsubmit').on('click', function () {
+        // Example product, replace this with actual product details
+        var product = {
+            id: 1,
+            quantity: 1,
+            price: 100
+        };
+        addProductToForm(product);
+    });
+
 
     // payment processing
     $('#paymentForm').on('submit', function (event) {
         event.preventDefault();
         setPaidAmount();
+        updateProductsInput(); // Update hidden inputs with current product list
 
         var formData = $(this).serialize();
         console.log('Form Data:', formData);
@@ -308,7 +335,6 @@ $(document).ready(function () {
                 console.log('Response:', response);
                 if (response.success) {
                     toastr.success(response.message);
-
                     var exampleModal = bootstrap.Modal.getInstance(document.getElementById('exampleModal'));
                     if (exampleModal) {
                         exampleModal.hide();
@@ -321,8 +347,6 @@ $(document).ready(function () {
                     receiptModal.show();
 
                     clearProductList();
-
-
                 } else {
                     toastr.error(response.message || 'An error occurred.');
                 }
@@ -331,10 +355,9 @@ $(document).ready(function () {
                 console.log('XHR:', xhr);
                 console.log('Status:', status);
                 console.log('Error:', error);
-                console.log('Response Text:', xhr.responseText); // Ye line check karein
+                console.log('Response Text:', xhr.responseText);
                 toastr.error('An error occurred. Please try again.');
             }
-
         });
     });
 
@@ -361,19 +384,19 @@ $(document).ready(function () {
         $('#receipt-products').empty();
     }
 
-    $('.clear-receipt[data-bs-dismiss="modal"]').on('click', function() {
+    $('.clear-receipt[data-bs-dismiss="modal"]').on('click', function () {
         clearReceipt();
     });
 
-     // Function to clear totals
-     function clearTotals() {
+    // Function to clear totals
+    function clearTotals() {
         $('#total-qty').text('0');
         $('#sub-total').text('0.00');
         $('#total-price').text('0.00');
     }
 
     // Payment submit button click event
-    $('#paymentsubmit').on('click', function() {
+    $('#paymentsubmit').on('click', function () {
         clearTotals();
 
     });
@@ -394,9 +417,6 @@ function calculateChangeReturn() {
         changeReturnInput.value = change > 0 ? change.toFixed(2) : '0.00';
     }
 }
-
-
-
 
 // Reset button functionality
 $('#reset-btn').on('click', function (event) {
@@ -422,40 +442,6 @@ $('#reset-btn').on('click', function (event) {
         }
     });
 });
-
-// if no product add so error display
-var productsInCart = [];
-
-// Function to add a product row
-function addProductRow(product) {
-    var rowHtml = `<tr>
-                    <td>${product.name}</td>
-                    <td>${product.quantity}</td>
-                    <td>${product.price}</td>
-                </tr>`;
-    $('#product-list-body').append(rowHtml);
-    productsInCart.push(product);
-    localStorage.setItem('productsInCart', JSON.stringify(productsInCart));
-}
-
-// Event listener for product image click
-$('#product-image').on('click', function () {
-    var newProduct = {
-        name: 'Sample Product',
-        quantity: 1,
-        price: 100
-    };
-    addProductRow(newProduct);
-});
-
-// Load products from localStorage
-var storedProducts = localStorage.getItem('productsInCart');
-if (storedProducts) {
-    productsInCart = JSON.parse(storedProducts);
-    $.each(productsInCart, function (index, product) {
-        addProductRow(product);
-    });
-}
 
 
 
@@ -559,8 +545,6 @@ function addProduct(productId) {
     input.value = productId;
     productList.appendChild(input);
 }
-
-
 
 
 // current date
@@ -772,7 +756,7 @@ function updateDiscount() {
     var discountValue = discountInput ? discountInput.value : '';
 
     // Check if the value is empty
-    if (discountValue === '' || isNaN( e)) {
+    if (discountValue === '' || isNaN(e)) {
         discountValue = '00.00';
     } else {
         discountValue = parseFloat(discountValue).toFixed(2);
@@ -962,36 +946,48 @@ buttons.forEach(button => {
         }
     });
 });
+// receipt
+function updateCustomerDetails() {
+    var selectedOption = document.getElementById('customer_id').selectedOptions[0];
+    document.getElementById('customer-name').textContent = selectedOption.getAttribute('data-name');
+    document.getElementById('customer-email').textContent = selectedOption.getAttribute('data-email');
+    document.getElementById('customer-phone').textContent = selectedOption.getAttribute('data-phone');
+    document.getElementById('customer-address').textContent = selectedOption.getAttribute('data-address');
+}
+
+// Initial update when page loads with first customer
+document.addEventListener('DOMContentLoaded', function() {
+    updateCustomerDetails();
+});
 
 
 
-// Chart JS
+// var chartData = @json($chartData);
+
+// var labels = chartData.map(item => item.date); // Dates for x-axis
+// var totalSalesData = chartData.map(item => item.total_sales); // Total sales for y-axis
+// var salesCountData = chartData.map(item => item.count); // Sales count for y-axis
+
 // var ctx = document.getElementById('myChart').getContext('2d');
 // var myChart = new Chart(ctx, {
-//     type: 'bar',
+//     type: 'bar', // Bar chart
 //     data: {
-//         labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+//         labels: labels,
 //         datasets: [{
-//             label: '# of Votes',
-//             data: [12, 19, 3, 5, 2, 3],
-//             backgroundColor: [
-//                 'rgba(255, 99, 132, 0.2)',
-//                 'rgba(54, 162, 235, 0.2)',
-//                 'rgba(255, 206, 86, 0.2)',
-//                 'rgba(75, 192, 192, 0.2)',
-//                 'rgba(153, 102, 255, 0.2)',
-//                 'rgba(255, 159, 64, 0.2)'
-//             ],
-//             borderColor: [
-//                 'rgba(255, 99, 132, 1)',
-//                 'rgba(54, 162, 235, 1)',
-//                 'rgba(255, 206, 86, 1)',
-//                 'rgba(75, 192, 192, 1)',
-//                 'rgba(153, 102, 255, 1)',
-//                 'rgba(255, 159, 64, 1)'
-//             ],
-//             borderWidth: 1
-//         }]
+//                 label: 'Total Sales Amount',
+//                 data: totalSalesData,
+//                 backgroundColor: 'rgba(75, 192, 192, 0.2)',
+//                 borderColor: 'rgba(75, 192, 192, 1)',
+//                 borderWidth: 1,
+//             },
+//             {
+//                 label: 'Sales Count',
+//                 data: salesCountData,
+//                 backgroundColor: 'rgba(255, 99, 132, 0.2)',
+//                 borderColor: 'rgba(255, 99, 132, 1)',
+//                 borderWidth: 1,
+//             }
+//         ]
 //     },
 //     options: {
 //         scales: {
@@ -1002,41 +998,26 @@ buttons.forEach(button => {
 //     }
 // });
 
-// var ctx = document.getElementById('mypieChart').getContext('2d');
-// var mypieChart = new Chart(ctx, {
-//     type: 'pie',
-//     data: {
-//         labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
-//         datasets: [{
-//             label: '# of Votes',
-//             data: [12, 19, 3, 5, 2, 3],
-//             backgroundColor: [
-//                 'rgba(255, 99, 132, 0.2)',
-//                 'rgba(54, 162, 235, 0.2)',
-//                 'rgba(255, 206, 86, 0.2)',
-//                 'rgba(75, 192, 192, 0.2)',
-//                 'rgba(153, 102, 255, 0.2)',
-//                 'rgba(255, 159, 64, 0.2)'
-//             ],
-//             borderColor: [
-//                 'rgba(255, 99, 132, 1)',
-//                 'rgba(54, 162, 235, 1)',
-//                 'rgba(255, 206, 86, 1)',
-//                 'rgba(75, 192, 192, 1)',
-//                 'rgba(153, 102, 255, 1)',
-//                 'rgba(255, 159, 64, 1)'
-//             ],
-//             borderWidth: 1
-//         }]
-//     },
-//     options: {
-//         scales: {
-//             y: {
-//                 beginAtZero: true
-//             }
-//         }
-//     }
-// });
+
+var piechart = document.getElementById('mypieChart').getContext('2d');
+var mypieChart = new Chart(piechart, {
+    type: 'doughnut',
+    data: {
+        labels: ['Youtube', 'Facebook', 'Amazon'],
+        datasets: [{
+            label: '# of Votes',
+            data: [1200, 1900, 3000],
+            backgroundColor: [
+                'rgba(255, 99, 132, 1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 206, 86, 1)',
+            ],
+        }]
+    },
+    options: {
+        responsive: true,
+    }
+});
 
 
 

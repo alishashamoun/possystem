@@ -40,7 +40,7 @@ class ProductController extends Controller
 {
     $request->validate([
         'category_id' => 'exists:categories,id',
-        'product_image' => 'nullable|image|mimes:png|max:2048',
+        'product_image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
     ]);
 
     $category_id = $request->input('category_id');
@@ -77,14 +77,16 @@ class ProductController extends Controller
         $product = Product::with('category', 'tags')->find($id);
         $categories = Category::all();
         $tags = Tag::all();
-        return view('admin.products.edit', compact('product', 'categories', 'tags'));
+        $selectedTagIds = $product->tags->pluck('id')->toArray();
+        $selectedCatryId = $product->category_id;
+        return view('admin.products.edit', compact('product', 'categories', 'tags', 'selectedTagIds', 'selectedCatryId'));
     }
 
     public function update(Request $request, $id)
 {
     $request->validate([
         'category_id' => 'exists:categories,id',
-        'product_image' => 'required|image|mimes:png|max:2048',
+        'product_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
     ]);
 
     $product = Product::find($id);
@@ -98,19 +100,14 @@ class ProductController extends Controller
 
     $category = Category::firstOrCreate(['id' => $category_id], ['name' => $category_name]);
 
-    // Handle product image upload
-    if ($request->hasFile('product_image')) {
-        // Delete the old image
-        if ($product->product_image) {
-            $oldImage = public_path('Image/' . $product->product_image);
-            if (File::exists($oldImage)) {
-                File::delete($oldImage);
-            }
-        }
 
+
+    $filename = $product->product_image; // Keep existing filename
+
+    if ($request->hasFile('product_image')) {
+        // Generate new filename if a new image is uploaded
         $filename = time() . '.' . $request->file('product_image')->extension();
         $request->file('product_image')->move(public_path('Image'), $filename);
-        $product->product_image = $filename;
     }
 
     $product->name = $request->input('name');
@@ -119,6 +116,7 @@ class ProductController extends Controller
     $product->quantity = $request->input('quantity');
     $product->category_id = $category->id;
     $product->inventory_level = $request->input('quantity');
+    $product->product_image = $filename;
     $product->save();
 
     $product->tags()->sync($request->input('tag_ids'));

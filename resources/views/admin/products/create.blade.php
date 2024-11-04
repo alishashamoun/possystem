@@ -4,11 +4,11 @@
         <div class="content">
 
             <!-- Start Content-->
-            <div class="container-xxl">
+            <div class="container-fluid">
 
-                <div class="py-3 d-flex align-items-sm-center flex-sm-row flex-column">
+                <div class="d-flex align-items-sm-center flex-sm-row flex-column">
                     <div class="flex-grow-1">
-                        <h4 class="fs-18 fw-semibold m-0">Form</h4>
+                        <h4 class="fs-18 fw-semibold m-0 my-2">Product Create</h4>
                     </div>
 
 
@@ -19,17 +19,11 @@
                         <div class="card">
 
                             <div class="card-header">
-                                <h5 class="card-title mb-0">Create Form</h5>
+
                             </div><!-- end card header -->
 
                             <div class="card-body">
                                 <form method="post" class="" action="{{ route('products.store') }}" enctype="multipart/form-data">
-                                    @if ($errors->any())
-                                        <div class="alert alert-danger alert-block">
-                                            <button type="button" class="close" data-dismiss="alert">×</button>
-                                            <strong>{{ $errors->first() }}</strong>
-                                        </div>
-                                    @endif
                                     @csrf
                                     <div class="row">
                                         <div class="col-xs-6 col-sm-6 col-md-6">
@@ -45,7 +39,7 @@
                                         <div class="col-xs-6 col-sm-6 col-md-6">
                                             <div class="form-group">
                                                 <strong>Product:</strong>
-                                                <input class="form-control my-2" type="file"  name="product_image" id="product_image" placeholder="Product Image"  required autocomplete="given-name">
+                                                <input class="form-control my-2" type="file" name="product_image" id="product_image" placeholder="Product Image"  required>
                                                 @error('product_image')
                                                     <div class="text-danger">{{ $message }}</div>
                                                 @enderror
@@ -100,8 +94,9 @@
                                         <div class="col-xs-6 col-sm-6 col-md-6">
                                             <div class="form-group">
                                                 <strong>Tags:</strong>
-                                                <select name="tag_ids[]" id="tags" class="form-control my-2" multiple
-                                                    required>
+                                                <select class="js-example-basic-multiple form-control" name="tag_ids[]" id="tags"
+                                                    multiple="multiple">
+                                                    <option value="">Select tag</option>
                                                     @foreach ($tags as $tag)
                                                         <option value="{{ $tag->id }}">{{ $tag->name }}</option>
                                                     @endforeach
@@ -110,10 +105,10 @@
                                                     <div class="text-danger">{{ $message }}</div>
                                                 @enderror
                                             </div>
-                                        </div>
+                                        </div> 
 
-                                        <div class="col-xs-6 col-sm-6 col-md-6 my-4">
-                                            <button type="submit" class="btn btn-primary">Submit</button>
+                                        <div class="col-xs-6 col-sm-6 col-md-6 my-4 text-end">
+                                            <button type="submit" class="btn btn-primary">Add</button>
                                             <a href="{{ route('products.index') }}" class="btn btn-danger">Back</a>
                                         </div>
                                     </div>

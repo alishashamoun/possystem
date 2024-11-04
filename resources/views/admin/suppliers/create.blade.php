@@ -4,7 +4,7 @@
         <div class="content">
 
             <!-- Start Content-->
-            <div class="container-xxl">
+            <div class="container-fluid">
 
                 <div class="py-3 d-flex align-items-sm-center flex-sm-row flex-column">
                     <div class="flex-grow-1">
@@ -35,8 +35,7 @@
                                         <div class="col-xs-6 col-sm-6 col-md-6">
                                             <div class="form-group">
                                                 <strong>Name:</strong>
-                                                <input class="form-control my-2" name="name" required
-                                                   required>
+                                                <input class="form-control my-2" name="name" required required>
                                                 @error('name')
                                                     <div class="text-danger">{{ $message }}</div>
                                                 @enderror
@@ -46,7 +45,7 @@
                                             <div class="form-group">
                                                 <strong>Email:</strong>
                                                 <input class="form-control my-2" type="email" name="email" required
-                                                   required>
+                                                    required>
                                                 @error('email')
                                                     <div class="text-danger">{{ $message }}</div>
                                                 @enderror
@@ -56,7 +55,7 @@
                                             <div class="form-group">
                                                 <strong>Phone:</strong>
                                                 <input class="form-control my-2" type="number" name="phone" required
-                                                     required>
+                                                    required>
                                                 @error('phone')
                                                     <div class="text-danger">{{ $message }}</div>
                                                 @enderror
@@ -65,8 +64,7 @@
                                         <div class="col-xs-6 col-sm-6 col-md-6">
                                             <div class="form-group">
                                                 <strong>Address:</strong>
-                                                <input class="form-control my-2" type="text"
-                                                    name="address" required
+                                                <input class="form-control my-2" type="text" name="address" required
                                                     required>
                                                 @error('address')
                                                     <div class="text-danger">{{ $message }}</div>
@@ -74,9 +72,9 @@
                                             </div>
                                         </div>
 
-                                        <div class="col-xs-6 col-sm-6 col-md-6 my-4">
+                                        <div class="text-end">
                                             <button type="submit" class="btn btn-primary">Create Supplier</button>
-                                            <a href="{{route('suppliers.index')}}" class="btn btn-danger">Back</a>
+                                            <a href="{{ route('suppliers.index') }}" class="btn btn-danger">Back</a>
                                         </div>
                                     </div>
                                 </form>

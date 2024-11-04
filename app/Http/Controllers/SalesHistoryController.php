@@ -13,7 +13,7 @@ class SalesHistoryController extends Controller
     public function index()
     {
 
-         $products = Product::all();
+        $products = Product::all();
         $paymentMethods = PaymentMethod::all();
         $sales = Sale::all();
         $warehouse = Warehouse::all();

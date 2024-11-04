@@ -4,31 +4,27 @@
         <div class="content">
 
             <!-- Start Content-->
-            <div class="container-xxl">
+            <div class="container-fluid">
 
                 <div class="py-3 d-flex align-items-sm-center flex-sm-row flex-column">
                     <div class="flex-grow-1">
-                        <h4 class="fs-18 fw-semibold m-0">Form</h4>
+                        <h4 class="fs-18 fw-semibold m-0">User Create</h4>
                     </div>
 
                     <div class="text-end">
                         <ol class="breadcrumb m-0 py-0">
-                            <li class="breadcrumb-item"><a href="javascript: void(0);">Forms</a></li>
-                            <li class="breadcrumb-item active">Form </li>
+
+
                         </ol>
                     </div>
                 </div>
-
-
-
-
 
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="card">
 
                             <div class="card-header">
-                                <h5 class="card-title mb-0">Create Form</h5>
+
                             </div><!-- end card header -->
 
                             <div class="card-body">
@@ -84,22 +80,18 @@
                                         </div>
                                         <div class="col-xs-6 col-sm-6 col-md-6">
                                             <div class="form-group">
-                                                {{-- @dd(config('permission.teams')); // This should output `false` --}}
-
                                                 <strong>Role:</strong>
-
-                                                <select name="roles[]" id="role" class="form-control my-2" multiple
-                                                    required>
+                                                <select class="js-example-basic-multiple form-control" name="roles[]" id="role"
+                                                 multiple="multiple">
                                                     <option value="">Select role</option>
                                                     @foreach ($roles as $role)
-                                                        <option value="{{ $role->name }}">{{ $role->name }}</option>
+                                                        <option value="{{ $role->id }}">{{ $role->name }}</option>
                                                     @endforeach
                                                 </select>
-
                                             </div>
                                         </div>
-                                        <div class="col-xs-6 col-sm-6 col-md-6 my-5 text-end">
-                                            <button type="submit" class="btn btn-primary">Submit</button>
+                                        <div class="col-xs-6 col-sm-6 col-md-6 mt-5 text-end">
+                                            <button type="submit" class="btn btn-primary">Add</button>
                                             <a href="{{route('users.index')}}" class="btn btn-danger">Back</a>
                                         </div>
                                     </div>

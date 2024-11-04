@@ -1,14 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<!-- Mirrored from zoyothemes.com/kadso/html/auth-login by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 01 Jul 2024 10:45:01 GMT -->
-<!-- Added by HTTrack -->
 <meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- /Added by HTTrack -->
-
 <head>
-
     <meta charset="utf-8" />
-    <title>Log In | Kadso - Responsive Admin Dashboard Template</title>
+    <title>Shopping Cart</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="A fully featured admin theme which can be used to build CRM, CMS, etc." />
     <meta name="author" content="Zoyothemes" />
@@ -21,16 +16,9 @@
     <link rel="stylesheet" href="assets/css/style.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-
-
-
-
     <!-- Icons -->
     <link href="/assets/css/icons.min.css" rel="stylesheet" type="text/css" />
-
 </head>
-
-
 <body>
     <div class="container-fluid">
         <div class="row justify-content-center">
@@ -76,13 +64,6 @@
         </div>
     </div>
 
-
-
-
-
-
-
-
     <!-- END wrapper -->
 
     <!-- Vendor -->
@@ -100,12 +81,6 @@
 
 
     <script src="https://cdn.jsdelivr.net/npm/js-flash-message@1.0.8/index.min.js"></script>
-
-
-
-
 </body>
-
-<!-- Mirrored from zoyothemes.com/kadso/html/auth-login by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 01 Jul 2024 10:45:01 GMT -->
 
 </html>

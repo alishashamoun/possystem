@@ -4,7 +4,7 @@
     <div class="content">
 
         <!-- Start Content-->
-        <div class="container-xxl">
+        <div class="container-fluid">
 
             <div class="py-3 d-flex align-items-sm-center flex-sm-row flex-column">
                 <div class="flex-grow-1">
@@ -22,7 +22,7 @@
             <!-- Datatables  -->
             <div class="row">
                 <div class="col-12">
-                 
+
                     <div class="card">
 
                         <div class="card-body">

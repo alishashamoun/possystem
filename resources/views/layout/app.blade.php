@@ -1,14 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<!-- Mirrored from zoyothemes.com/kadso/html/forms-pickers by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 01 Jul 2024 10:45:46 GMT -->
-<!-- Added by HTTrack -->
-<meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- /Added by HTTrack -->
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
 <head>
-
     <meta charset="utf-8" />
-    <title>Form Pickers | Kadso - Responsive Admin Dashboard Template</title>
+    <title>Shopping Cart</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="A fully featured admin theme which can be used to build CRM, CMS, etc." />
     <meta name="author" content="Zoyothemes" />
@@ -26,14 +22,21 @@
     <!-- Icons -->
     <link href="{{ asset('assets/css/icons.min.css') }}" rel="stylesheet" type="text/css" />
 
+
     <!-- Include Select2 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" rel="stylesheet" />
     <!-- Include jQuery (required for Select2) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="{{ asset('assets/css/toastr.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/styles.css') }}">
+
+    <!-- Select 2 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css"
+        integrity="sha512-nMNlpuaDPrqlEls3IX/Q56H36qvBASwb3ipuo3MxeWbsQB1881ox0cRv7UPTgBlriqoynt35KjEwgGUeUXIPnw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
 
 </head>
 <!-- body start -->
@@ -62,7 +65,6 @@
                         </li>
                     </ul>
 
-
                     <ul class="list-unstyled topnav-menu mb-0 d-flex align-items-center">
 
                         <li class="dropdown notification-list topbar-dropdown">
@@ -81,8 +83,11 @@
                                     <a class="dropdown-item" href="{{ route('profile.edit') }}">Profile</a>
                                 </li>
                                 <li>
+                                    <form method="POST" action="{{ route('logout') }}">
+                                        @csrf
+                                        <button type="submit" class="dropdown-item">Logout</button>
+                                    </form>
 
-                                    <a class="dropdown-item" href="{{ route('logout') }}">Logout</a>
                                 </li>
                             </ul>
                         </li>
@@ -91,7 +96,6 @@
             </div>
         </div>
         <!-- end Topbar -->
-
 
         <!-- Left Sidebar Start -->
         <div class="app-sidebar-menu">
@@ -122,46 +126,17 @@
 
                     <ul id="side-menu">
                         <li class="sidebar-item ">
-                            <a href='/admin/dashboard'>
-                                <i data-feather="home"></i>
+                            <a href="{{ route('admin.dashboard') }}">
+                                <i class="fa-solid fa-house-chimney-window"></i>
                                 <span> Dashboard </span>
                             </a>
                         </li>
 
-                        <li class="sidebar-item">
-                            <a href="#sidebarUser" data-bs-toggle="collapse">
-                                <i class="fa-regular fa-user"></i>
-                                <span>People</span>
-                                <span class="menu-arrow"></span>
-                            </a>
-                            <div class="collapse" id="sidebarUser">
-                                <ul class="nav-second-level">
-                                    <li>
-                                        <a href="{{ route('customers.index') }}">
-                                            <i class="fa-solid fa-users"></i>
-
-                                            <span>customer</span>
-                                        </a>
-                                    </li>
-                                    <li class="sidebar-item">
-                                        <a href='/admin/users'>
-                                            <i class="fa-regular fa-user"></i>
-                                            <span>user</span>
-                                        </a>
-                                    </li>
-                                    <li class="sidebar-item">
-                                        <a href='/admin/suppliers'>
-                                            <i class="fa-regular fa-user"></i>
-                                            <span>Supplier</span>
-                                        </a>
-                                    </li>
-
-
-
-                                </ul>
-                            </div>
-                        </li>
-
+                        <x-layout :menuItems="[
+                            ['route' => 'customers.index', 'name' => 'Customer', 'icon' => 'fa-user-large'],
+                            ['route' => 'users.index', 'name' => 'User', 'icon' => 'fa-user-large'],
+                            ['route' => 'suppliers.index', 'name' => 'Supplier', 'icon' => 'fa-user-large'],
+                        ]" />
 
 
                         <li class="sidebar-item">
@@ -172,23 +147,22 @@
                             </a>
                             <div class="collapse" id="sidebarAuth">
                                 <ul class="nav-second-level">
-                                    <li><a href="{{ route('products.index') }}"><i
-                                                class="fa-duotone fa-solid fa-box-open"></i>Product</a></li>
-                                    <li><a href="{{ route('categories.index') }}">
-                                            <i class="fas fa-list"></i>
-                                            Categories</a></li>
 
-                                    <li>
+                                    <li class="sidebar-item">
+                                        <a href="{{ route('products.index') }}">
+                                            <i class="fa-solid fa-box-open"></i>
+                                            Product</a>
+                                    </li>
+                                    <li class="sidebar-item">
+                                        <a href="{{ route('categories.index') }}">
+                                            <i class="fa-solid fa-layer-group"></i>
+                                            Categories</a>
+                                    </li>
+                                    <li class="sidebar-item">
                                         <a href="{{ route('tags.index') }}">
                                             <i class="fas fa-tags"></i>
                                             Tags</a>
                                     </li>
-
-                                    {{-- <li>
-                                        <a href="{{ route('barcode.generate', $product->id) }}">
-                                            <i class="fa-solid fa-print"></i>
-                                            Print Barcode</a>
-                                    </li> --}}
                                 </ul>
                             </div>
                         </li>
@@ -205,13 +179,7 @@
                                     <li>
                                         <a href="{{ route('purchases.index') }}">
                                             <i class="fa-sharp fa-solid fa-cart-shopping"></i><span>Purchase</span></a>
-                                            </li>
-
-                                    {{-- <li>
-                                        <a href="{{ route('purchases.return') }}">
-                                            <i class="fas fa-list"></i>
-                                            Purchase Return</a>
-                                    </li> --}}
+                                    </li>
                                 </ul>
                             </div>
                         </li>
@@ -228,55 +196,35 @@
                                             <i class="fa-solid fa-box"></i> View Inventory</a></li>
 
 
-                                    <a href="{{ route('inventory.checkStockLevels') }}">
+                                    {{-- <a href="{{ route('inventory.checkStockLevels') }}">
                                         <i class="fas fa-chart-bar"></i> Check Stock Levels
                                     </a>
 
                                     <a href="{{ route('inventory.report') }}">
                                         <i class="fas fa-file-pdf"></i> Generate Report
-                                    </a>
+                                    </a> --}}
 
                                 </ul>
                             </div>
                         </li>
 
-                        <li class="sidebar-item">
-                            <a href="#sidebarSales" data-bs-toggle="collapse">
+                        <li class="sidebar-item ">
+                            <a href="{{ route('sales.history') }}">
                                 <i data-feather="shopping-cart"></i>
-                                <span>Sales</span>
-                                <span class="menu-arrow"></span>
+                                <span> Sales Report </span>
                             </a>
-                            <div class="collapse" id="sidebarSales">
-                                <ul class="nav-second-level">
-                                    <li><a href="{{ route('sales.index') }}">
-                                            Sales</a></li>
-
-                                </ul>
-                                <ul class="nav-second-level">
-                                    <li><a href="{{ route('sales.history') }}">
-                                            Sales History</a></li>
-
-                                </ul>
-                            </div>
                         </li>
 
-                        {{-- <li>
-                            <a href="#sidebarBarcode" data-bs-toggle="collapse">
-                                <i data-feather="barcode"></i>
-                                <span>Barcode Generator</span>
-                                <span class="menu-arrow"></span>
+                        <li class="sidebar-item ">
+                            <a href="{{ route('inventory.report') }}">
+                                <i data-feather="shopping-cart"></i>
+                                <span> Inventory Report </span>
                             </a>
-                            <div class="collapse" id="sidebarBarcode">
-                                <ul class="nav-second-level">
-                                    <li><a href="{{ route('products.barcode', $product->id) }}">Barcode</a></li>
-                                </ul>
-                            </div>
-                        </li> --}}
+                        </li>
 
                         <li class="sidebar-item">
                             <a href='{{ route('logout') }}'>
                                 <i data-feather="log-out"></i>
-
                                 <span> Logout </span>
                             </a>
                         </li>
@@ -287,24 +235,14 @@
 
             </div>
         </div>
+
+
+
     </div>
     <!-- Left Sidebar End -->
 
-
     @yield('content')
-    {{-- <div class="container">
-            <h2>Purchase History</h2>
-            <ul>
-                @foreach (Auth::user()->purchases as $purchase)
-                    <li>{{ $purchase->item_name }} - {{ $purchase->quantity }} - {{ $purchase->created_at }}</li>
-                @endforeach
-            </ul>
-        </div> --}}
-
-
     @yield('scripts')
-
-
 
     <script>
         const searchInput = document.getElementById('sidebar-search');
@@ -367,16 +305,22 @@
     <script src="{{ asset('assets/js/app.js') }}"></script>
     <!-- Include jQuery (required for Select2) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-
     <!-- Include Select2 JS -->
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-
-
-
-    <script src="{{ asset('assets/js/toastr.min.js') }}"></script>
-    <script src="{{ asset('assets/js/jquery.min.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"
+        integrity="sha512-2ImtlRlf2VVmiGZsjm9bEyhjGW4dU7B6TNwh/hx/iSByxNENtj3WVE6o/9Lj4TJeVXPi4bnOIMXFIJJAeufa0A=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('.js-example-basic-multiple').select2({
+                placeholder: "Select options"
+            });
+        });
+    </script>
+
+    <script src="{{ asset('assets/js/jquery.min.js') }}"></script>
     <script src="{{ asset('assets/js/main.js') }}"></script>
+    <script src="{{ asset('assets/js/toastr.min.js') }}"></script>
 
 </body>
 

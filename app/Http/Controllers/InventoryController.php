@@ -5,18 +5,15 @@ namespace App\Http\Controllers;
 
 use App\Models\Inventory;
 use App\Models\Product;
-use App\Models\Stock;
 use Illuminate\Http\Request;
-use App\Helpers\BarcodeGenerator;
-use Log;
+use Illuminate\Support\Facades\Validators\Validator;
 
 class InventoryController extends Controller
 {
     public function index()
     {
-        $inventories = Inventory::with('product')->get();
-        $products = Product::all();
-        return view('admin.inventory.index', compact('inventories', 'products'));
+        $inventoryItems = Inventory::all();
+        return view('admin.inventory.index', compact('inventoryItems'));
     }
 
     public function create()
@@ -29,149 +26,88 @@ class InventoryController extends Controller
     {
         $request->validate([
             'product_id' => 'required|exists:products,id',
-            'quantity' => 'required|integer',
-            'quantity_action' => 'required|in:+,-',
+            'sku' => 'required|string|unique:inventories,sku',
+            'quantity' => 'required|integer|min:0',
+            'cost_price' => 'required|numeric|min:0',
+            'selling_price' => 'required|numeric|min:0',
         ]);
 
-        $product = Product::find($request->input('product_id'));
+        Inventory::create($request->all());
 
-        if (!$product) {
-            return back()->withInput()->withErrors(['error' => 'Product not found.']);
-        }
-
-        if ($request->input('quantity_action') == '+') {
-            // Stock in
-            $this->stockIn($request);
-        } elseif ($request->input('quantity_action') == '-') {
-            // Stock out
-            $this->stockOut($request);
-        }
-
-        return redirect()->route('inventory.index');
-    }
-
-    public function stockIn(Request $request)
-    {
-        $product = Product::find($request->input('product_id'));
-        $stock = new Stock();
-        $stock->product_id = $product->id;
-        $stock->quantity = $request->input('quantity');
-        $stock->type = 'in';
-        $stock->save();
-
-        $product->quantity += $request->input('quantity');
-        $product->save();
-
-        return redirect()->route('inventory.index');
-    }
-
-    public function stockOut(Request $request)
-    {
-        $product = Product::find($request->input('product_id'));
-        if (!$product) {
-            return back()->withInput()->withErrors(['error' => 'Product not found.']);
-        }
-
-        if ($product->quantity < $request->input('quantity')) {
-            return back()->withInput()->withErrors(['error' => 'Not enough stock!']);
-        }
-
-        $stock = new Stock();
-        $stock->product_id = $product->id;
-        $stock->quantity = $request->input('quantity');
-        $stock->type = 'out';
-        $stock->save();
-
-        $product->quantity -= $request->input('quantity');
-        $product->save();
-
-        return redirect()->route('inventory.index');
-    }
-
-
-    public function generateReport()
-    {
-        $products = Product::all();
-        $report = [];
-
-        foreach ($products as $product) {
-            $stock = Stock::where('product_id', $product->id)->first();
-
-            if ($stock) {
-                $report[] = [
-                    'product_name' => $product->name,
-                    'quantity' => $stock->quantity,
-                    'value' => $stock->quantity * $product->price,
-                ];
-            } else {
-                $report[] = [
-                    'product_name' => $product->name,
-                    'quantity' => 0, // or some other default value
-                    'value' => 0, // or some other default value
-                ];
-            }
-        }
-
-        return view('admin.inventory.report', compact('report'));
-    }
-
-
-    public function checkStockLevels()
-    {
-        $products = Product::all();
-        $lowStockProducts = [];
-
-        foreach ($products as $product) {
-            $stock = Stock::where('product_id', $product->id)->first();
-
-            if ($stock) {
-                if ($stock->quantity < $product->threshold) {
-                    $lowStockProducts[] = $product;
-                }
-            } else {
-                // Log an error or send an alert if no stock record is found
-                // ...
-            }
-        }
-
-        return view('admin.low_stock_products', compact('lowStockProducts'));
+        return redirect()->route('inventory.index')->with('success', 'Product added to inventory!');
     }
 
     public function edit($id)
     {
-        $inventory = Inventory::find($id);
         $products = Product::all();
-        return view('admin.inventory.edit', compact('inventory', 'products'));
+        $inventoryItem = Inventory::findOrFail($id);
+        $selectedProductId = $inventoryItem->product_id;
+        return view('admin.inventory.edit', compact('inventoryItem', 'products', 'selectedProductId'));
     }
 
     public function update(Request $request, $id)
     {
-        $validatedData = $request->validate([
-            'product_id' => 'equired|exists:products,id',
-            'quantity' => 'equired|integer',
+        $request->validate([
+            'product_id' => 'required|string|max:255',
+            'quantity' => 'required|integer|min:0',
+            'cost_price' => 'required|numeric|min:0',
+            'selling_price' => 'required|numeric|min:0',
         ]);
 
-        $inventory = new Inventory($validatedData);
-        $product = Product::find($request->input('product_id'));
-        $inventory = Inventory::find($id);
+        $inventoryItem = Inventory::findOrFail($id);
+        $inventoryItem->update($request->all());
 
-        $inventory->update($request->all());
-        return redirect()->route('inventory.index');
+        return redirect()->route('inventory.index')->with('success', 'Inventory updated successfully!');
     }
 
     public function destroy($id)
     {
-        $inventory = Inventory::find($id);
-        $inventory->delete();
-        return redirect()->route('inventory.index');
+        $inventoryItem = Inventory::findOrFail($id);
+        $inventoryItem->delete();
+
+        return redirect()->route('inventory.index')->with('success', 'Product removed from inventory.');
     }
 
-    public function generateBarcode($id)
-    {
-        $product = Product::find($id);
-        $barcode = BarcodeGenerator::generateBarcode($product->id, 'PHARMA');
-        return view('barcode', compact('barcode'));
-    }
+      // Stock In Function
+      public function stockIn(Request $request, $id)
+      {
+          $product = Product::find($id);
 
+          if ($product) {
+              $product->quantity += $request->input('quantity'); // Adding stock
+              $product->save();
+
+              return response()->json([
+                  'message' => 'Stock added successfully.',
+                  'product' => $product
+              ]);
+          }
+
+          return response()->json(['message' => 'Product not found.'], 404);
+      }
+
+      // Stock Out Function
+      public function stockOut(Request $request, $id)
+      {
+          $product = Product::find($id);
+
+          if ($product) {
+              $quantity = $request->input('quantity');
+
+              if ($product->quantity >= $quantity) {
+                  $product->quantity -= $quantity; // Reducing stock
+                  $product->save();
+
+                  return response()->json([
+                      'message' => 'Stock reduced successfully.',
+                      'product' => $product
+                  ]);
+              }
+
+              return response()->json(['message' => 'Not enough stock available.'], 400);
+          }
+
+          return response()->json(['message' => 'Product not found.'], 404);
+      }
 
 }

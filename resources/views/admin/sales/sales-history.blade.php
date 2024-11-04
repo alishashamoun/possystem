@@ -4,11 +4,11 @@
         <div class="content">
 
             <!-- Start Content-->
-            <div class="container-xxl">
+            <div class="container-fluid">
 
                 <div class="pt-4 d-flex align-items-sm-center flex-sm-row flex-column">
                     <div class="flex-grow-1">
-                        <h1>Sales History</h1>
+                        <h1>Sales Report</h1>
                     </div>
                 </div>
 
@@ -34,33 +34,41 @@
                                     </thead>
                                     <tbody>
                                         @foreach ($sales as $sale)
-                                            <?php
-                                            // Retrieve the product and customer information
-                                            $product = \App\Models\Product::find($sale->product_id);
-                                            $customer = \App\Models\Customer::find($sale->customer_id);
-                                            $warehouses = \App\Models\Warehouse::find($sale->warehouse_id);
-                                            ?>
-                                            <tr>
-                                                <td>{{ $product ? $product->name : 'Product not found' }}</td>
-                                                <td>{{ $customer ? $customer->name : 'Customer not found' }}</td>
-                                                <td>{{ $warehouses ? $warehouse->name : 'warehouse not found' }}</td>
-                                                <td><span class="badge text-darksale">{{ $sale->status }}</span></td>
-                                                <td>{{ 'RS ' . number_format($sale->grand_total, 2) }}</td>
-                                                <td>{{ 'RS ' . number_format($sale->paid, 2) }}</td>
-                                                <td><span class="badge text-darkstatus">{{ $sale->payment_status }}</span>
-                                                </td>
-                                                <td><span class="badge bg-darktype">{{ $sale->payment_type }}</span></td>
-                                                <td>
-                                                    <div class="badge bg-light-info p-2">
-                                                        <div class="time mb-1">
-                                                            {{ \Carbon\Carbon::parse($sale->created_at)->format('H:i') }}
+                                            @php
+                                                $customer = \App\Models\Customer::find($sale->customer_id);
+                                                $warehouse = \App\Models\Warehouse::find($sale->warehouse);
+                                            @endphp
+                                            @foreach ($sale->products as $product)
+                                                <tr>
+                                                    <td>
+                                                        <img src="{{ asset('Image/' . $product->product_image) }}"
+                                                            alt="Product Image" width="100">
+                                                    </td>
+
+                                                    <td>{{ $customer ? $customer->name : 'Customer not found' }}</td>
+                                                    <td>{{ $sale->warehouse ? $sale->warehouse : 'Warehouse not found' }}
+                                                    </td>
+
+                                                    <td><span class="badge text-darksale">{{ $sale->status }}</span></td>
+                                                    <td>{{ 'RS ' . number_format($sale->grand_total, 2) }}</td>
+                                                    <td>{{ 'RS ' . number_format($sale->paid, 2) }}</td>
+                                                    <td><span
+                                                            class="badge text-darkstatus">{{ $sale->payment_status }}</span>
+                                                    </td>
+                                                    <td><span class="badge bg-darktype">{{ $sale->payment_type }}</span>
+                                                    </td>
+                                                    <td>
+                                                        <div class="badge bg-light-info p-2">
+                                                            <div class="time mb-1">
+                                                                {{ \Carbon\Carbon::parse($sale->created_at)->format('H:i') }}
+                                                            </div>
+                                                            <div class="date">
+                                                                {{ \Carbon\Carbon::parse($sale->created_at)->format('d M Y') }}
+                                                            </div>
                                                         </div>
-                                                        <div class="date">
-                                                            {{ \Carbon\Carbon::parse($sale->created_at)->format('d M Y') }}
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                            </tr>
+                                                    </td>
+                                                </tr>
+                                            @endforeach
                                         @endforeach
                                     </tbody>
                                 </table>

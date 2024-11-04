@@ -4,7 +4,7 @@
     <div class="content">
 
         <!-- Start Content-->
-        <div class="container-xxl">
+        <div class="container-fluid">
 
             <div class="py-3 d-flex align-items-sm-center flex-sm-row flex-column">
                 <div class="flex-grow-1">
@@ -28,11 +28,12 @@
                             <table class="table table-stripped">
                                 <thead>
                                     <tr>
-                                        <th>ID</th>
+
                                         <th>Name</th>
                                         <th>Email</th>
                                         <th>Phone</th>
                                         <th>Address</th>
+                                        <th>Created At</th>
                                         <th>Actions</th>
                                         <th></th>
                                     </tr>
@@ -40,13 +41,20 @@
                                 <tbody>
                                     @foreach ($suppliers as $supplier)
                                         <tr>
-                                            <td>{{ $supplier->id }}</td>
+
                                             <td>{{ $supplier->name }}</td>
                                             <td>{{ $supplier->email }}</td>
                                             <td>{{ $supplier->phone }}</td>
                                             <td>{{ $supplier->address }}</td>
                                             <td>
+                                                <div class="badge bg-light-info p-2">
+                                                    <div class="time mb-1">{{ \Carbon\Carbon::parse($supplier->created_at)->format('H:i') }}</div>
+                                                    <div class="date">{{ \Carbon\Carbon::parse($supplier->created_at)->format('d M Y') }}</div>
+                                                </div>
+                                            </td>
+                                            <td>
                                                 <a href="{{ route('suppliers.edit', $supplier->id) }}"><i class="fa-regular fa-pen-to-square"></i></a>
+                                            </td>
 
                                             <td>
                                                 <form action="{{ route('suppliers.destroy', $supplier->id) }}" method="POST" >
@@ -56,7 +64,6 @@
                                                         <i class="fa-solid fa-trash"></i>
                                                     </button>
                                                 </form>
-                                            </td>
                                             </td>
                                         </tr>
                                     @endforeach

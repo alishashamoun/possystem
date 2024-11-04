@@ -54,11 +54,19 @@
                         <div class="row">
                             <div class="col-6">
                                 <div class="input-group mb-3">
-                                    <select class="form-select" id="customer_id" name="customer_id">
+                                    <select class="form-select" id="customer_id" name="customer_id"
+                                        onchange="updateCustomerDetails()">
                                         @foreach ($customers as $customer)
-                                            <option selected value="{{ $customer->id }}">{{ $customer->name }}</option>
+                                            <option value="{{ $customer->id }}" data-name="{{ $customer->name }}"
+                                                data-email="{{ $customer->email }}" data-phone="{{ $customer->phone }}"
+                                                data-address="{{ $customer->address }}">
+                                                {{ $customer->name }}
+                                            </option>
                                         @endforeach
-                                        <option value="walk_in">Walk-In Customer</option>
+                                        <option value="walk_in" data-name="Walk-In Customer" data-email=""
+                                            data-phone="" data-address="">
+                                            Walk-In Customer
+                                        </option>
                                     </select>
                                     @error('customer_id')
                                         <span class="error text-danger">{{ $message }}</span>
@@ -323,22 +331,24 @@
                                             <li><a class="dropdown-item"
                                                     href="{{ route('profile.edit') }}">Profile</a></li>
                                             <li>
-
-                                                <a class="dropdown-item" href="{{ route('logout') }}">Logout</a>
+                                                <form method="POST" action="{{ route('logout') }}">
+                                                    @csrf
+                                                    <button type="submit" class="dropdown-item">Logout</button>
+                                                </form>
                                             </li>
                                         </ul>
                                     </div>
                                 </div>
 
 
-
-
                                 <!-- Calculator Modal -->
-                                <div class="modal fade" id="calculatorModal" tabindex="-1" aria-labelledby="calculatorLabel" aria-hidden="true">
+                                <div class="modal fade" id="calculatorModal" tabindex="-1"
+                                    aria-labelledby="calculatorLabel" aria-hidden="true">
                                     <div class="modal-dialog modal-dialog-right">
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                    aria-label="Close"></button>
                                             </div>
                                             <div class="modal-body">
                                                 <!-- Calculator Design -->
@@ -360,7 +370,8 @@
                                                         <button class="btn" value="8">8</button>
                                                         <button class="btn" value="9">9</button>
                                                         <button class="btn-coloring" value="/">/</button>
-                                                        <button class="btn large-btn zero-btn" value="0">0</button>
+                                                        <button class="btn large-btn zero-btn"
+                                                            value="0">0</button>
                                                         <button class="btn-coloring" value=".">.</button>
                                                         <button class="btn-coloring" value="=">=</button>
                                                     </div>
@@ -398,6 +409,7 @@
                             <!-- Rows will be dynamically inserted here -->
                         </tbody>
                     </table>
+
 
                     <div class="checkout-section">
 
@@ -447,10 +459,19 @@
                                         <div class="row">
                                             <div class="col-lg-8 col-12">
                                                 <div class="payment-form">
+                                                    @if ($errors->any())
+                                                        <div class="alert alert-danger">
+                                                            <ul>
+                                                                @foreach ($errors->all() as $error)
+                                                                    <li>{{ $error }}</li>
+                                                                @endforeach
+                                                            </ul>
+                                                        </div>
+                                                    @endif
 
-                                                    <form method="POST"
-                                                        action="{{ route('cashier.processPayment') }}"
-                                                        id="paymentForm">
+
+                                                    <form action="{{ route('cashier.processPayment') }}"
+                                                        method="POST" id="paymentForm">
                                                         @csrf
                                                         <!-- Warehouse -->
                                                         <input type="hidden" name="warehouse"
@@ -462,40 +483,38 @@
 
                                                         <input type="hidden" id="grand_total" name="grand_total"
                                                             value="" />
-
                                                         <input type="hidden" name="paid" id="paid"
                                                             value="" />
+                                                        <input type="hidden" name="products[0][id]" value="1">
+                                                        <input type="hidden" name="products[0][quantity]"
+                                                            value="2">
+                                                        <input type="hidden" name="products[0][price]"
+                                                            value="100">
 
-
-                                                            <input type="hidden" name="products[]" id="productsInput" value="">
-
-
-
-
-                                                        <!-- Rest of the form fields -->
                                                         <div class="row">
                                                             <!-- Received Amount -->
                                                             <div class="col-6 form-group mb-4">
                                                                 <label for="received_amount">Received Amount:</label>
                                                                 <input type="number" class="form-control"
                                                                     id="received_amount" name="received_amount"
-                                                                    oninput="calculateChangeReturn()">
+                                                                    oninput="calculateChangeReturn()" required>
+                                                                @error('received_amount')
+                                                                    <span
+                                                                        class="error text-danger">{{ $message }}</span>
+                                                                @enderror
                                                             </div>
-                                                            @error('received_amount')
-                                                                <span class="error text-danger">{{ $message }}</span>
-                                                            @enderror
-
 
                                                             <!-- Paying Amount -->
                                                             <div class="col-6 form-group mb-4">
                                                                 <label for="paying-amount">Paying Amount:</label>
                                                                 <input type="number" id="paying-amount"
                                                                     name="paying_amount" class="form-control"
-                                                                    oninput="calculateChangeReturn()">
+                                                                    oninput="calculateChangeReturn()" required>
+                                                                @error('paying_amount')
+                                                                    <span
+                                                                        class="error text-danger">{{ $message }}</span>
+                                                                @enderror
                                                             </div>
-                                                            @error('paying_amount')
-                                                                <span class="error text-danger">{{ $message }}</span>
-                                                            @enderror
 
                                                             <!-- Change Return -->
                                                             <div class="col-6 form-group mb-4">
@@ -503,57 +522,56 @@
                                                                 <input type="number" id="change-return"
                                                                     name="change_return" class="form-control"
                                                                     readonly>
+                                                                @error('change_return')
+                                                                    <span
+                                                                        class="error text-danger">{{ $message }}</span>
+                                                                @enderror
                                                             </div>
-
-
-
-
-                                                            @error('change_return')
-                                                                <span class="error text-danger">{{ $message }}</span>
-                                                            @enderror
 
                                                             <!-- Payment Type -->
                                                             <div class="col-6 form-group mb-4">
                                                                 <label for="payment-type">Payment Type:</label>
                                                                 <select id="payment-type" class="form-select"
-                                                                    name="payment_type">
+                                                                    name="payment_type" required>
                                                                     <option value="Cash">Cash</option>
                                                                     <option value="Credit Card">Credit Card</option>
                                                                     <option value="Debit Card">Debit Card</option>
                                                                     <option value="Online">Online</option>
                                                                 </select>
-
+                                                                @error('payment_type')
+                                                                    <span
+                                                                        class="error text-danger">{{ $message }}</span>
+                                                                @enderror
                                                             </div>
-                                                            @error('payment_type')
-                                                                <span class="error text-danger">{{ $message }}</span>
-                                                            @enderror
 
                                                             <!-- Payment Status -->
                                                             <div class="col-6 form-group mb-4">
                                                                 <label for="payment-status">Payment Status:</label>
                                                                 <select class="form-select" id="payment-status"
-                                                                    name="payment_status">
+                                                                    name="payment_status" required>
                                                                     <option value="paid">Paid</option>
                                                                     <option value="unpaid">UnPaid</option>
                                                                 </select>
+                                                                @error('payment_status')
+                                                                    <span
+                                                                        class="error text-danger">{{ $message }}</span>
+                                                                @enderror
                                                             </div>
-                                                            @error('payment_status')
-                                                                <span class="error text-danger">{{ $message }}</span>
-                                                            @enderror
 
-                                                            <!-- Payment Status -->
+                                                            <!-- Status -->
                                                             <div class="col-6 form-group mb-4">
                                                                 <label for="status">Status:</label>
                                                                 <select class="form-select" id="status"
-                                                                    name="status">
+                                                                    name="status" required>
                                                                     <option value="pending">Pending</option>
                                                                     <option value="completed">Completed</option>
                                                                     <option value="failed">Failed</option>
                                                                 </select>
+                                                                @error('status')
+                                                                    <span
+                                                                        class="error text-danger">{{ $message }}</span>
+                                                                @enderror
                                                             </div>
-                                                            @error('payment_status')
-                                                                <span class="error text-danger">{{ $message }}</span>
-                                                            @enderror
 
                                                             <!-- Form Buttons -->
                                                             <div class="modal-footer">
@@ -564,6 +582,7 @@
                                                             </div>
                                                         </div>
                                                     </form>
+
 
                                                 </div>
                                             </div>
@@ -650,42 +669,40 @@
 
                                         <table class="table mt-5">
                                             <tbody>
-                                                @foreach ($customers as $customer)
-                                                    <tr>
-                                                        <td scope="row" class="p-0">
-                                                            <span>Date:</span>
-                                                            <span id="current-date"></span>
-                                                        </td>
-                                                    </tr>
+                                                <tr>
+                                                    <td scope="row" class="p-0">
+                                                        <span>Date:</span>
+                                                        <span id="current-date"></span>
+                                                    </td>
+                                                </tr>
 
-                                                    <tr>
-                                                        <td scope="row" class="p-0">
-                                                            <span>Customer:</span>
-                                                            <span>{{ $customer->first()->name }}</span>
-                                                        </td>
-                                                    </tr>
+                                                <tr>
+                                                    <td scope="row" class="p-0">
+                                                        <span>Customer:</span>
+                                                        <span id="customer-name"></span>
+                                                    </td>
+                                                </tr>
 
-                                                    <tr>
-                                                        <td scope="row" class="p-0">
-                                                            <span>Email:</span>
-                                                            <span>{{ $customer->first()->email }}</span>
-                                                        </td>
-                                                    </tr>
+                                                <tr>
+                                                    <td scope="row" class="p-0">
+                                                        <span>Email:</span>
+                                                        <span id="customer-email"></span>
+                                                    </td>
+                                                </tr>
 
-                                                    <tr>
-                                                        <td scope="row" class="p-0">
-                                                            <span>Phone:</span>
-                                                            <span>{{ $customer->first()->phone }}</span>
-                                                        </td>
-                                                    </tr>
+                                                <tr>
+                                                    <td scope="row" class="p-0">
+                                                        <span>Phone:</span>
+                                                        <span id="customer-phone"></span>
+                                                    </td>
+                                                </tr>
 
-                                                    <tr>
-                                                        <td scope="row" class="p-0">
-                                                            <span>Address:</span>
-                                                            <span>{{ $customer->first()->address }}</span>
-                                                        </td>
-                                                    </tr>
-                                                @endforeach
+                                                <tr>
+                                                    <td scope="row" class="p-0">
+                                                        <span>Address:</span>
+                                                        <span id="customer-address"></span>
+                                                    </td>
+                                                </tr>
                                             </tbody>
                                         </table>
 
@@ -748,7 +765,8 @@
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-primary" onclick="printModal()"
                                             data-bs-dismiss="modal">Print</button>
-                                            <button type="button" class="btn btn-danger clear-receipt" data-bs-dismiss="modal">Close</button>
+                                        <button type="button" class="btn btn-danger clear-receipt"
+                                            data-bs-dismiss="modal">Close</button>
 
                                     </div>
                                 </div>
@@ -813,8 +831,6 @@
             </ul>
         </div>
     @endif
-
-
 
 
 

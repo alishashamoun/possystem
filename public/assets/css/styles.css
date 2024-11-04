@@ -652,18 +652,17 @@ button#pay-now-btn {
 }
 
 
-/* @media (min-width: 992px) {
-    .modal-dialog {
-        max-width: 80%;
+@media (max-width: 991px) {
+    .custom-product-content{
+        grid-template-columns: 1fr !important;
+        height: auto;
     }
+    /* .card.box1{
+        display: block;
+    } */
+}
 
-    .payment-form,
-    .inner-page {
-        flex: 1 1 50%;
-    }
-} */
-
-@media screen and (min-device-width: 768px) and (max-device-width: 1024px) {
+/* @media (max-width: 991px) {
     body {
         font-size: 16px;
     }
@@ -680,6 +679,9 @@ button#pay-now-btn {
     .product-list,
     .product-showcase {
         padding: 15px;
+    }
+    .custom-product-content{
+        grid-template-columns: 1fr;
     }
 }
 
@@ -706,7 +708,7 @@ button#pay-now-btn {
     .footer {
         text-align: center;
     }
-}
+} */
 
 
 .product-list {
@@ -1294,9 +1296,8 @@ button.btn-coloring {
     font-size: 15px;
 }
 /* chart JS */
-.chart {
-    max-width: 900px;
-    margin: 20px 12px;
+/* .chart {
+    width: 900px;
     border-radius: 10px;
 }
 
@@ -1308,3 +1309,44 @@ button.btn-coloring {
 .chart.chart_types button {
     padding: 10px 25px;
 }
+.product-content {
+    display: flex;
+    align-items: baseline;
+    gap: 20px;
+}
+.chartpie {
+    width: 50%;
+}
+.chart .card h3 {
+    margin: 20px;
+    font-size: 20px;
+}
+.chartpie .card h3 {
+    margin: 20px;
+    font-size: 20px;
+} */
+
+.custom-chart, .custom-chartpie {
+    background-color: white;
+    padding: 15px;
+}
+
+.custom-product-content{
+    position: relative;
+    width: 100%;
+    padding: 20px;
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    grid-gap: 30px;
+    min-height: 200px;
+}
+.custom-product-content .custom-card{
+    position: relative;
+    background: #fff;
+    padding: 20px;
+    width: 100%;
+    box-shadow: 0 7px 25px rgba(0,0,0,0.08);
+    border-radius: 20px;
+}
+
+
