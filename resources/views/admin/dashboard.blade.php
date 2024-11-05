@@ -147,7 +147,7 @@
 
                 <div class="custom-product-content">
                     <div class="custom-card">
-                        <canvas id="mypieChart"></canvas>
+                        <canvas id="doughnutChart" width="400" height="400"></canvas>
                     </div>
                     <div class="custom-card">
                         <canvas id="myChart" width="400" height="200"></canvas>

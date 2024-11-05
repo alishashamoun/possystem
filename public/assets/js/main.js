@@ -960,32 +960,28 @@ document.addEventListener('DOMContentLoaded', function() {
     updateCustomerDetails();
 });
 
-
-
-
-
+// second chart
 var ctx = document.getElementById('myChart').getContext('2d');
 var myChart = new Chart(ctx, {
-    type: 'bar', // Bar chart
+    type: 'line', 
     data: {
-        labels: labels,
+        labels: months,
         datasets: [{
-                label: 'Total Sales Amount',
-                data: totalSalesData,
-                backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                borderColor: 'rgba(75, 192, 192, 1)',
-                borderWidth: 1,
-            },
-            {
-                label: 'Sales Count',
-                data: salesCountData,
-                backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                borderColor: 'rgba(255, 99, 132, 1)',
-                borderWidth: 1,
-            }
-        ]
+            label: 'Sales (in USD)',
+            data: totals,
+            backgroundColor: 'rgba(54, 162, 235, 0.2)',
+            borderColor: 'rgba(54, 162, 235, 1)',
+            borderWidth: 2,
+            fill: true,
+        }]
     },
     options: {
+        responsive: true,
+        plugins: {
+            legend: {
+                position: 'top',
+            }
+        },
         scales: {
             y: {
                 beginAtZero: true
@@ -994,26 +990,41 @@ var myChart = new Chart(ctx, {
     }
 });
 
+// first chart
+const labels = ['Beverage', 'Snack'];
+const dataValues = [2000, 1500];
 
-var piechart = document.getElementById('mypieChart').getContext('2d');
-var mypieChart = new Chart(piechart, {
+const doughnutCtx = document.getElementById('doughnutChart').getContext('2d');
+
+const doughnutChart = new Chart(doughnutCtx, {
     type: 'doughnut',
     data: {
-        labels: ['Youtube', 'Facebook', 'Amazon'],
+        labels: labels,
         datasets: [{
-            label: '# of Votes',
-            data: [1200, 1900, 3000],
+            label: 'Sales by Category',
+            data: dataValues,
             backgroundColor: [
-                'rgba(255, 99, 132, 1)',
-                'rgba(54, 162, 235, 1)',
-                'rgba(255, 206, 86, 1)',
+                'rgba(54, 162, 235, 0.6)', // Blue for Beverage
+                'rgba(255, 99, 132, 0.6)' // Red for Snack
             ],
+            borderColor: [
+                'rgba(54, 162, 235, 1)', // Blue border
+                'rgba(255, 99, 132, 1)' // Red border
+            ],
+            borderWidth: 1
         }]
     },
     options: {
         responsive: true,
+        plugins: {
+            legend: {
+                display: true,
+                position: 'top'
+            }
+        }
     }
 });
+
 
 
 

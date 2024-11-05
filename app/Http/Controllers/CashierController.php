@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\Customer;
 use App\Models\Order;
 use App\Models\PaymentDetail;
@@ -108,12 +109,15 @@ class CashierController extends Controller
             foreach ($validatedData['products'] as $product) {
                 $order->products()->attach($product['id'], [
                     'price' => $product['price'],
+                    'created_at' => now(),
+                    'updated_at' => now(),
                 ]);
 
                 $sale->products()->attach($product['id'], [
                     'quantity' => $product['quantity'],
                     'price' => $product['price'],
                 ]);
+
             }
 
             DB::commit();

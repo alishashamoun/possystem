@@ -8,6 +8,7 @@ use App\Models\Product;
 use App\Models\Purchase;
 use App\Models\Order;
 use App\Models\Sale;
+use Carbon\Carbon;
 
 class DashboardController extends Controller
 {
@@ -27,23 +28,36 @@ class DashboardController extends Controller
 
         $recentOrders = Order::with('products')->latest()->take(5)->get();
 
-        $sales = Sale::whereMonth('created_at', 10)
-            ->whereYear('created_at', date('Y'))
-            ->selectRaw('DATE(created_at) as date, COUNT(*) as count, SUM(grand_total) as total_sales')
-            ->groupBy('date')
+        // line chart
+        $salesData = Sale::selectRaw('SUM(grand_total) as total, MONTH(created_at) as month')
+            ->whereYear('created_at', Carbon::now()->year)
+            ->groupBy('month')
+            ->orderBy('month')
             ->get();
 
-        $chartData = $sales->map(function ($sale) {
-            return [
-                'date' => $sale->date,
-                'count' => $sale->count,
-                'total_sales' => $sale->total_sales,
-            ];
-        });
+        $months = [];
+        $totals = [];
 
-        //  dd($chartData);
+        foreach ($salesData as $data) {
+            $months[] = Carbon::createFromFormat('m', $data->month)->format('F');
+            $totals[] = $data->total;
+        }
+
+        // // pie chart
+
+        // $beverageSales = Sale::whereHas('products.category', function ($query) {
+        //     $query->where('categories.name', 'Beverage');
+        // })->sum('grand_total');
+
+        // $snackSales = Sale::whereHas('products.category', function ($query) {
+        //     $query->where('categories.name', 'Snack');
+        // })->sum('grand_total');
+
+        // $labels = ['Beverage', 'Snack'];
+        // $dataValues = [$beverageSales, $snackSales];
 
 
-        return view('admin.dashboard', compact('totalSales', 'totalAmount', 'todayTotalSales', 'todayTotalPurchase', 'todayTotalReceived', 'recentCustomers', 'recentOrders', 'chartData'));
+
+        return view('admin.dashboard', compact('totalSales', 'totalAmount', 'todayTotalSales', 'todayTotalPurchase', 'todayTotalReceived', 'recentCustomers', 'recentOrders', 'months', 'totals'));
     }
 }

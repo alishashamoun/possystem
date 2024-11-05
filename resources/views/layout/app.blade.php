@@ -302,25 +302,30 @@
     <script src="{{ asset('assets/js/pages/form-picker.js') }}"></script>
 
     <!-- App js-->
-    <script src="{{ asset('assets/js/app.js') }}"></script>
     <!-- Include jQuery (required for Select2) -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    {{-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> --}}
     <!-- Include Select2 JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"
         integrity="sha512-2ImtlRlf2VVmiGZsjm9bEyhjGW4dU7B6TNwh/hx/iSByxNENtj3WVE6o/9Lj4TJeVXPi4bnOIMXFIJJAeufa0A=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         $(document).ready(function() {
             $('.js-example-basic-multiple').select2({
                 placeholder: "Select options"
             });
         });
+
+        const months = @json($months);
+        const totals = @json($totals);
+
+
     </script>
 
-    <script src="{{ asset('assets/js/jquery.min.js') }}"></script>
-    <script src="{{ asset('assets/js/main.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    {{-- <script src="{{ asset('assets/js/jquery.min.js') }}"></script> --}}
+    <script src="{{ asset('assets/js/app.js') }}"></script>
     <script src="{{ asset('assets/js/toastr.min.js') }}"></script>
+    <script src="{{ asset('assets/js/main.js') }}"></script>
 
 </body>
 
